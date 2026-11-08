@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Veil</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="main">
+      <div id="leftPanel">
+        <div class="panelHeader">
+          <img src="VeilLogo.png" alt="Veil Logo" />
+          <div class="panelHeaderText">V.E.I.L</div>
+          <button id="btnEditSetup" class="gearButton" aria-label="Edit Setup" title="Edit Setup"></button>
+        </div>
+
+        <div class="panelSection">
+          <div class="sectionTitle">Dataset</div>
+          <div class="stack">
+            <!-- RENAMED -->
+            <button id="btnOpen">Load Ship</button>
+            <button id="btnMoveChart">Move Chart</button>
+          </div>
+        </div>
+
+        <!-- Shown only when the active tab is in the "load ship" state -->
+        <div id="shipControlsSection" class="panelSection hidden">
+          <div class="sectionTitle">Ship Controls</div>
+          <div class="stack">
+            <button id="btnMarkDamage">Mark Damage</button>
+            <button id="btnSystemDeploy">System Deployed</button>
+            <button id="btnRefitRemove" class="btnRefit">Remove Refit Boxes</button>
+            <div class="hint" style="text-align:center;">
+              Mark Damage, Remove Refit Boxes, and System Deployed tag boxes.
+            </div>
+          </div>
+        </div>
+
+        <!-- Turn controls (own panel, only in load ship state) -->
+          <div id="turnControlsSection" class="panelSection hidden">
+          <div class="sectionTitle">Turn Controls</div>
+          <div class="stack">
+            <div id="turnCounter" class="turnCounter">Turn 1</div>
+            <button id="btnStartTurn">Start Turn</button>
+            <button id="btnSaveNow">Save Now</button>
+            <button id="btnLoadGame">Load Game</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="contentPanel">
+        <div id="contentTopBar">
+          <div id="tabs"></div>
+        </div>
+
+        <div id="contentBody">
+          <!-- Image panel -->
+          <div id="imagePanel">
+            <div id="canvasWrap">
+              <canvas id="canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Properties panel -->
+            <div id="propsPanel">
+
+            <!-- Energy allocation UI -->
+            <div id="energyPanel" class="hidden">
+              <div class="propTitle energyTitle">Energy Allocation</div>
+              <div id="energyTable" class="energyTable"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../desktop-api.js"></script>
+    <script src="renderer.js"></script>
+  <script src="../damage-mapping.js"></script>
+<script src="../veil-adapter.js"></script>
+  </body>
+</html>

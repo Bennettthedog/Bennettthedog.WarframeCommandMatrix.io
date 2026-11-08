@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Warframe Command Matrix</title>
+  <link rel="stylesheet" href="site.css">
+  <script src="config.js" defer></script><script src="app.js" defer></script>
+</head>
+<body data-theme="starhold">
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-mark">CM</span><span>WARFRAME COMMAND MATRIX<span class="brand-sub">VEIL · STARHOLD</span></span></a>
+    <div class="connection"><span id="onlineDot" class="dot"></span><span id="connectionStatus">Server offline</span></div>
+    <span id="identity"></span><button id="logout" class="subtle" hidden>Sign out</button>
+  </header>
+  <main>
+    <section id="gateway" class="gateway">
+      <div class="intro"><h1>Command Matrix</h1><p>Sign in to host an engagement or join your fleet.</p><div class="program-card veil-card"><img src="views/veil/VeilLogo.png" alt=""><div><h2>V.E.I.L</h2><p>Your ships, energy allocation and move chart.</p><span>PRIVATE SHIP CONTROLS</span></div></div><div class="program-card starhold-card"><span class="program-badge">SH</span><div><h2>STARHOLD</h2><p>Shared ship displays and host damage assignment.</p><span>SHARED FLEET CONTROL</span></div></div></div>
+      <div class="panel access">
+        <p class="eyebrow">PLAYER ACCESS</p><h2>Sign in</h2>
+        <form id="authForm"><label for="playerName">Player name</label><input id="playerName" autocomplete="username" minlength="2" maxlength="32" required><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" required><div class="actions"><button name="mode" value="login">Sign in</button></div><p class="hint">Use the player name and password assigned by your host. Contact the host if you need an account or password reset.</p></form>
+      </div>
+    </section>
+    <section id="dashboard" hidden>
+      <div class="section-heading"><div><p class="eyebrow">OPERATIONS</p><h1>Your engagements</h1></div><span class="badge">SAVED ON HOST PC</span></div>
+      <div class="dashboard-grid"><form id="createForm" class="panel"><h2>Host a game</h2><p>Assemble your fleet and invite the table.</p><label for="gameName">Engagement name</label><input id="gameName" value="Fleet engagement" maxlength="80" required><button>Create game</button></form><form id="joinForm" class="panel"><h2>Join the table</h2><p>Enter the eight-character code from your host.</p><label for="joinCode">Game code</label><input id="joinCode" class="code-input" placeholder="ABCD2345" maxlength="8" required><button>Join game</button></form></div>
+      <h2 class="saved-title">Resume an engagement</h2><div id="savedGames" class="saved-games"></div>
+    </section>
+    <section id="game" hidden>
+      <div class="game-header"><div><button id="back" class="subtle">← Engagements</button><h1 id="roomName"></h1></div><div class="room-meta"><span id="phase" class="badge"></span><button id="copyCode" class="code-button" title="Copy join code"></button><span id="role" class="badge"></span></div></div>
+      <div class="game-layout">
+        <aside class="panel roster"><p class="eyebrow">AT THE TABLE</p><div id="members"></div><div class="divider"></div><div class="fleet-heading"><h2>Fleet</h2><span id="shipCount" class="count"></span></div><div id="ships"></div><p class="hint">Veil is private to the ship’s owner. StarHold is shared with this game.</p><div id="hostControls" class="host-controls" hidden><p class="eyebrow">HOST CONTROLS</p><button id="startGame">Start game</button><button id="pauseGame" class="secondary">Pause game</button><button id="reopenLobby" class="subtle">Reopen lobby</button></div><details><summary>Game activity</summary><div id="activity"></div></details></aside>
+        <div class="workspace">
+          <section id="lobby" class="panel"><div class="section-heading"><div><p class="eyebrow">FLEET ASSEMBLY</p><h2>Select your ships</h2></div><button id="readyButton" class="secondary">Mark ready</button></div><form id="selectShipForm" class="selection-row"><label>Ship design<select id="designSelect" required></select></label><label>Ship name <span class="hint">(optional)</span><input id="shipName" maxlength="100" placeholder="Use design name"></label><button>Add to my fleet</button></form><p class="hint">Ships load from the host’s ship library. Ask the host to add new designs.</p></section>
+          <section class="panel station"><div class="station-bar"><div><p class="eyebrow" id="stationCaption">SHIP STATION</p><h2 id="selectedName">Choose a ship from the fleet</h2></div><div class="actions"><button id="veilTab" class="secondary" hidden>Veil · Private</button><button id="starholdTab" class="secondary" hidden>StarHold · Shared</button><button id="saveView" hidden>Save now</button><button id="reloadView" class="subtle" hidden>Reload ship</button></div></div><div id="viewNotice" class="view-notice">Select ships in the lobby, then mark ready. The host starts the game.</div><div id="emptyStation" class="empty-station"><div class="reticle">＋</div><h2>Awaiting fleet assignment</h2><p>Your ship’s systems will appear here.</p></div><div id="stationContainer"></div></section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <footer><span>WARFRAME COMMAND MATRIX</span><span>VEIL / STARHOLD &nbsp; · &nbsp; LOCAL GAME SERVER</span></footer>
+</body>
+</html>

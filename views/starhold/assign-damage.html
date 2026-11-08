@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StarHold - Assign Damage</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="assignDamageWindowBody">
+    <div class="assignWindowShell">
+      <div class="modalCard assignWindowCard">
+        <div class="modalHeader">
+          <div id="assignDamageTitle" class="modalTitle">Assign Damage</div>
+          <button id="btnAssignDamageClose" class="iconButton modalCloseBtn" aria-label="Close assign damage window">&times;</button>
+        </div>
+        <div class="modalBody">
+          <div class="formGrid">
+            <label class="formField">
+              <span class="formLabel">Ship</span>
+              <input id="assignShipDisplay" type="text" readonly />
+            </label>
+            <label class="formField">
+              <span class="formLabel">Total Damage</span>
+              <input id="assignTotalDamage" type="number" min="1" step="1" inputmode="numeric" />
+            </label>
+            <label class="formField">
+              <span class="formLabel">Shield Hit</span>
+              <div class="selectFieldShell">
+                <select id="assignShieldNumber"></select>
+                <span class="dropdownChevron" aria-hidden="true"></span>
+              </div>
+            </label>
+            <label class="formField">
+              <span class="formLabel">Resolution</span>
+              <div class="selectFieldShell">
+                <select id="assignDamageMode">
+                  <option value="automatic">Automatic 2d6 DAC</option>
+                  <option value="manual">Manual 2d6 Total</option>
+                </select>
+                <span class="dropdownChevron" aria-hidden="true"></span>
+              </div>
+            </label>
+          </div>
+          <div id="assignDamageHint" class="modalHint">Waiting for active ship data from StarHold...</div>
+          <div id="assignDestructionChance" class="damageChancePreview hidden" aria-live="polite">
+            <div id="assignDestructionChanceText" class="damageChanceText">Destruction chance</div>
+            <div id="assignDestructionChanceDetail" class="damageChanceDetail">Enter damage to estimate the chance of destruction.</div>
+          </div>
+        </div>
+        <div class="modalActions">
+          <button id="btnAssignDamageCancel" class="secondaryButton" type="button">Cancel</button>
+          <button id="btnAssignDamageSubmit" type="button">Assign Damage</button>
+        </div>
+      </div>
+    </div>
+    <div id="assignWeaponPromptOverlay" class="modalOverlay hidden" aria-hidden="true">
+      <div class="modalCard assignWindowCard">
+        <div class="modalHeader">
+          <div id="assignWeaponPromptTitle" class="modalTitle">Choose Weapon Hit</div>
+          <button id="btnAssignWeaponPromptClose" class="iconButton modalCloseBtn" type="button" aria-label="Cancel weapon selection">&times;</button>
+        </div>
+        <div class="modalBody assignModePromptBody">
+          <div id="assignWeaponPromptLead" class="assignModePromptLead">Select which box is hit.</div>
+          <div id="assignWeaponPromptList" class="weaponSelectList"></div>
+        </div>
+        <div class="modalActions assignModePromptActions">
+          <button id="btnAssignWeaponPromptSkip" class="secondaryButton hidden" type="button">Skip</button>
+          <button id="btnAssignWeaponPromptCancel" class="secondaryButton" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="assignManualDacOverlay" class="modalOverlay hidden" aria-hidden="true">
+      <div class="modalCard assignWindowCard manualDacPromptCard">
+        <div class="modalHeader">
+          <div id="assignManualDacTitle" class="modalTitle">Manual DAC Roll</div>
+          <button id="btnAssignManualDacClose" class="iconButton modalCloseBtn" type="button" aria-label="Cancel manual DAC allocation">&times;</button>
+        </div>
+        <div class="modalBody manualDacPromptBody">
+          <div id="assignManualDacLead" class="assignModePromptLead">Internal Hit</div>
+          <div id="assignManualDacPromptText" class="assignModePromptText">Enter the 2d6 total for this internal hit.</div>
+          <div id="assignManualDacRollField" class="formGrid">
+            <label class="formField">
+              <span class="formLabel">2d6 Total (2-12)</span>
+              <input id="assignManualDacRollInput" type="number" min="2" max="12" step="1" inputmode="numeric" />
+            </label>
+          </div>
+          <div id="assignManualDacError" class="modalHint error manualDacPromptError hidden">Enter a 2d6 total from 2 to 12.</div>
+          <div id="assignManualDacComplete" class="manualDacComplete manualDacHidden">Damage complete</div>
+        </div>
+        <div id="assignManualDacActions" class="modalActions manualDacPromptActions">
+          <button id="btnAssignManualDacCancel" class="secondaryButton" type="button">Cancel Remaining</button>
+          <button id="btnAssignManualDacApply" type="button">Apply Roll</button>
+        </div>
+      </div>
+    </div>
+    <script src="../desktop-api.js"></script>
+    <script src="assign-damage.js"></script>
+  </body>
+</html>

@@ -1,0 +1,549 @@
+{
+  "chart": {
+    "id": "D4.21",
+    "caption": "(D4.21) DAMAGE ALLOCATION CHART",
+    "columns": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M"
+    ],
+    "underlinedCells": [
+      "2:A",
+      "2:B",
+      "2:C",
+      "2:D",
+      "2:E",
+      "3:A",
+      "3:B",
+      "3:H",
+      "4:A",
+      "4:B",
+      "5:A",
+      "5:F",
+      "6:E",
+      "8:E",
+      "9:A",
+      "9:F",
+      "10:A",
+      "10:B",
+      "11:A",
+      "11:B",
+      "11:H",
+      "12:A",
+      "12:B",
+      "12:C",
+      "12:D",
+      "12:E"
+    ],
+    "rows": [
+      {
+        "dieRoll": "2",
+        "cells": [
+          "Bridge",
+          "Flag\nBridge",
+          "Sensor",
+          "Damage\nControl",
+          "A Hull",
+          "Left\nW En",
+          "Trans",
+          "Tractor",
+          "Shuttle",
+          "Lab",
+          "F Hull",
+          "Right\nW En",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "3",
+        "cells": [
+          "Drone",
+          "Phaser",
+          "Impulse",
+          "Left\nW En",
+          "Right\nW En",
+          "A Hull",
+          "Shuttle",
+          "Damage\nControl",
+          "Center\nW En",
+          "Lab",
+          "Battery",
+          "Phaser",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "4",
+        "cells": [
+          "Phaser",
+          "Trans",
+          "Right\nW En",
+          "Impulse",
+          "F Hull",
+          "A Hull",
+          "Left\nW En",
+          "APR",
+          "Lab",
+          "Trans",
+          "Probe",
+          "Center\nW En",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "5",
+        "cells": [
+          "Right\nW En",
+          "A Hull",
+          "Cargo",
+          "Battery",
+          "Shuttle",
+          "Torp",
+          "Left\nW En",
+          "Impulse",
+          "Right\nW En",
+          "Tractor",
+          "Probe",
+          "Any\nWeapon",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "6",
+        "cells": [
+          "F Hull",
+          "Impulse",
+          "Lab",
+          "Left\nW En",
+          "Sensor",
+          "Tractor",
+          "Shuttle",
+          "Right\nW En",
+          "Phaser",
+          "Trans",
+          "Battery",
+          "Any\nWeapon",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "7",
+        "cells": [
+          "Cargo",
+          "F Hull",
+          "Battery",
+          "Center\nW En",
+          "Shuttle",
+          "APR",
+          "Lab",
+          "Phaser",
+          "Any\nW En",
+          "Probe",
+          "A Hull",
+          "Any\nWeapon",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "8",
+        "cells": [
+          "A Hull",
+          "APR",
+          "Shuttle",
+          "Right\nW En",
+          "Scanner",
+          "Tractor",
+          "Lab",
+          "Left\nW En",
+          "Phaser",
+          "Trans",
+          "Battery",
+          "Any\nWeapon",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "9",
+        "cells": [
+          "Left\nW En",
+          "F Hull",
+          "Cargo",
+          "Battery",
+          "Lab",
+          "Drone",
+          "Right\nW En",
+          "Impulse",
+          "Left\nW En",
+          "Tractor",
+          "Probe",
+          "Any\nWeapon",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "10",
+        "cells": [
+          "Phaser",
+          "Tractor",
+          "Left\nW En",
+          "Impulse",
+          "A Hull",
+          "F Hull",
+          "Right\nW En",
+          "APR",
+          "Lab",
+          "Trans",
+          "Probe",
+          "Center\nW En",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "11",
+        "cells": [
+          "Torp",
+          "Phaser",
+          "Impulse",
+          "Right\nW En",
+          "Left\nW En",
+          "F Hull",
+          "Tractor",
+          "Damage\nControl",
+          "Center\nW En",
+          "Lab",
+          "Battery",
+          "Phaser",
+          "Excess\nDamage"
+        ]
+      },
+      {
+        "dieRoll": "12",
+        "cells": [
+          "Aux\nCon",
+          "Emer\nBridge",
+          "Scanner",
+          "Probe",
+          "F Hull",
+          "Right\nW En",
+          "Trans",
+          "Shuttle",
+          "Tractor",
+          "Lab",
+          "A Hull",
+          "Left\nW En",
+          "Excess\nDamage"
+        ]
+      }
+    ]
+  },
+  "labels": [
+    {
+      "label": "A Hull",
+      "chartLabel": "A Hull",
+      "associatedBoxes": [
+        "Center Hull",
+        "Aft Hull",
+        "Repair"
+      ]
+    },
+    {
+      "label": "APR",
+      "chartLabel": "APR",
+      "associatedBoxes": [
+        "APR"
+      ]
+    },
+    {
+      "label": "Any W En",
+      "chartLabel": "Any\nW En",
+      "associatedBoxes": [
+        "Left Warp",
+        "Right Warp",
+        "Center Warp",
+        "Tachyon Missle",
+        "Tachyon Gun",
+        "Kinetic Wave Generators",
+        "Pulse Emmitter",
+        "Dark Matter Torpedo",
+        "Quantum Transporters"
+      ]
+    },
+    {
+      "label": "Any Weapon",
+      "chartLabel": "Any\nWeapon",
+      "associatedBoxes": [
+        "Dimensional Phase Device",
+        "Phaser 1",
+        "Phaser 2",
+        "Phaser 3",
+        "Phaser 4",
+        "Phaser G",
+        "Photon Torpedo",
+        "Plasmatic Pulsar Device",
+        "Disruptor",
+        "Plasma Torpedo D",
+        "Plasma Torpedo F",
+        "Plasma Torpedo G",
+        "Plasma Torpedo S",
+        "Plasma Torpedo R",
+        "Hellbore",
+        "Fusion Beam",
+        "Expanding Sphere Generator",
+        "Drone",
+        "ADD",
+        "Web Breaker",
+        "Light Rail Gun",
+        "Phaser-W1",
+        "Phaser-W3",
+        "Heavy Dark Matter Pulsar",
+        "Light Dark Matter Pulsar",
+        "Tachyon Gun",
+        "Kinetic Wave Generators",
+        "Dark Matter Torpedo",
+        "Pulse Emmitter",
+        "Tachyon Missle",
+        "Light Hyper Cannon",
+        "Heavy Hyper Cannon",
+        "Phaser=P1",
+        "Phaser-Q1",
+        "Phaser-Q3",
+        "Energy Howitzer",
+        "SC",
+        "Anti Proton Beam",
+        "Anti Proton Lance",
+        "Phaser-A1",
+        "Phaser-A3",
+        "TE-Missiles",
+        "TC-Beams",
+        "Phaser-Q2"
+      ]
+    },
+    {
+      "label": "Aux Con",
+      "chartLabel": "Aux\nCon",
+      "associatedBoxes": [
+        "Auxiliary Control",
+        "CPU"
+      ]
+    },
+    {
+      "label": "Battery",
+      "chartLabel": "Battery",
+      "associatedBoxes": [
+        "Battery"
+      ]
+    },
+    {
+      "label": "Bridge",
+      "chartLabel": "Bridge",
+      "associatedBoxes": [
+        "Bridge",
+        "CPU"
+      ]
+    },
+    {
+      "label": "Cargo",
+      "chartLabel": "Cargo",
+      "associatedBoxes": [
+        "Cargo",
+        "Repair",
+        "Barraks",
+        "Barracks"
+      ]
+    },
+    {
+      "label": "Center W En",
+      "chartLabel": "Center\nW En",
+      "associatedBoxes": [
+        "Center Warp",
+        "Quantum Transporters"
+      ]
+    },
+    {
+      "label": "Damage Control",
+      "chartLabel": "Damage\nControl",
+      "associatedBoxes": [
+        "Damage Control"
+      ]
+    },
+    {
+      "label": "Drone",
+      "chartLabel": "Drone",
+      "associatedBoxes": [
+        "Plasmatic Pulsar Device",
+        "Hellbore",
+        "Expanding Sphere Generator",
+        "Drone",
+        "ADD",
+        "Web Breaker",
+        "Tachyon Missle",
+        "Light Hyper Cannon",
+        "Heavy Hyper Cannon",
+        "SC",
+        "TE-Missiles"
+      ]
+    },
+    {
+      "label": "Emer Bridge",
+      "chartLabel": "Emer\nBridge",
+      "associatedBoxes": [
+        "Emergency Bridge"
+      ]
+    },
+    {
+      "label": "Excess Damage",
+      "chartLabel": "Excess\nDamage",
+      "associatedBoxes": [
+        "Excess Damage"
+      ]
+    },
+    {
+      "label": "F Hull",
+      "chartLabel": "F Hull",
+      "associatedBoxes": [
+        "Forward Hull",
+        "Center Hull",
+        "Repair"
+      ]
+    },
+    {
+      "label": "Flag Bridge",
+      "chartLabel": "Flag\nBridge",
+      "associatedBoxes": [
+        "Security",
+        "Flag Bridge",
+        "Web Device"
+      ]
+    },
+    {
+      "label": "Impulse",
+      "chartLabel": "Impulse",
+      "associatedBoxes": [
+        "Impulse"
+      ]
+    },
+    {
+      "label": "Lab",
+      "chartLabel": "Lab",
+      "associatedBoxes": [
+        "Lab"
+      ]
+    },
+    {
+      "label": "Left W En",
+      "chartLabel": "Left\nW En",
+      "associatedBoxes": [
+        "Left Warp",
+        "Quantum Transporters"
+      ]
+    },
+    {
+      "label": "Phaser",
+      "chartLabel": "Phaser",
+      "associatedBoxes": [
+        "Phaser 1",
+        "Phaser 2",
+        "Phaser 3",
+        "Phaser 4",
+        "Phaser G",
+        "Phaser-W1",
+        "Phaser-W3",
+        "Pulse Emmitter",
+        "Heavy Dark Matter Pulsar",
+        "Light Dark Matter Pulsar",
+        "Phaser=P1",
+        "Phaser-Q1",
+        "Phaser-Q3",
+        "Phaser-A1",
+        "Phaser-A3",
+        "Phaser-Q2"
+      ]
+    },
+    {
+      "label": "Probe",
+      "chartLabel": "Probe",
+      "associatedBoxes": [
+        "Probe",
+        "T-link"
+      ]
+    },
+    {
+      "label": "Right W En",
+      "chartLabel": "Right\nW En",
+      "associatedBoxes": [
+        "Right Warp",
+        "Quantum Transporters"
+      ]
+    },
+    {
+      "label": "Scanner",
+      "chartLabel": "Scanner",
+      "associatedBoxes": [
+        "Scanner"
+      ]
+    },
+    {
+      "label": "Sensor",
+      "chartLabel": "Sensor",
+      "associatedBoxes": [
+        "Sensor",
+        "Special Sensor"
+      ]
+    },
+    {
+      "label": "Shuttle",
+      "chartLabel": "Shuttle",
+      "associatedBoxes": [
+        "Shuttle"
+      ]
+    },
+    {
+      "label": "Torp",
+      "chartLabel": "Torp",
+      "associatedBoxes": [
+        "Disruptor",
+        "Fusion Beam",
+        "Photon Torpedo",
+        "Plasma Torpedo D",
+        "Plasma Torpedo F",
+        "Plasma Torpedo G",
+        "Plasma Torpedo S",
+        "Plasma Torpedo R",
+        "Light Rail Gun",
+        "Tachyon Gun",
+        "Kinetic Wave Generators",
+        "Dark Matter Torpedo",
+        "Light Hyper Cannon",
+        "Heavy Hyper Cannon",
+        "Energy Howitzer",
+        "Anti Proton Beam",
+        "Anti Proton Lance",
+        "TC-Beams"
+      ]
+    },
+    {
+      "label": "Tractor",
+      "chartLabel": "Tractor",
+      "associatedBoxes": [
+        "Tractor"
+      ]
+    },
+    {
+      "label": "Trans",
+      "chartLabel": "Trans",
+      "associatedBoxes": [
+        "Transporter"
+      ]
+    }
+  ]
+}

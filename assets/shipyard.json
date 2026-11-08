@@ -1,0 +1,715 @@
+{
+  "sections": [
+    {
+      "label": "Boxes",
+      "entries": [
+        {
+          "name": "Shield #1",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Shield #2",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Shield #3",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Shield #4",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Shield #5",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Shield #6",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Crew Units",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Admin Shuttles",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Boarding Parties",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Probes (Ammo)",
+          "types": [
+            "External"
+          ],
+          "Other Names": [
+            "Probes"
+          ]
+        },
+        {
+          "name": "Probe",
+          "types": [],
+          "Other Names": [
+            "PRB"
+          ]
+        },
+        {
+          "name": "Transporter Bombs",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Transporter Dummies",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Nuclear Space Mine",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Tractor",
+          "types": []
+        },
+        {
+          "name": "Bridge",
+          "types": []
+        },
+        {
+          "name": "Forward Hull",
+          "types": []
+        },
+        {
+          "name": "APR",
+          "types": []
+        },
+        {
+          "name": "Battery",
+          "types": [],
+          "Other Names": [
+            "BTTY"
+          ]
+        },
+        {
+          "name": "Cargo",
+          "types": []
+        },
+        {
+          "name": "Transporter",
+          "types": []
+        },
+        {
+          "name": "Impulse",
+          "types": []
+        },
+        {
+          "name": "Emergency Bridge",
+          "types": []
+        },
+        {
+          "name": "Shuttle",
+          "types": []
+        },
+        {
+          "name": "Lab",
+          "types": []
+        },
+        {
+          "name": "Center Hull",
+          "types": []
+        },
+        {
+          "name": "Left Warp",
+          "types": []
+        },
+        {
+          "name": "Right Warp",
+          "types": []
+        },
+        {
+          "name": "Center Warp",
+          "types": []
+        },
+        {
+          "name": "Aft Hull",
+          "types": []
+        },
+        {
+          "name": "Security",
+          "types": []
+        },
+        {
+          "name": "Auxiliary Control",
+          "types": []
+        },
+        {
+          "name": "Repair",
+          "types": []
+        },
+        {
+          "name": "Armor",
+          "types": []
+        },
+        {
+          "name": "Web Device",
+          "types": []
+        },
+        {
+          "name": "Phaser 1",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser 2",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser 3",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser 4",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser G",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Photon Torpedo",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Web Caster",
+          "types": [
+            "Heavy",
+            "Drone"
+          ]
+        },
+        {
+          "name": "Plasmatic Pulsar Device",
+          "types": [
+            "Heavy",
+            "Drone"
+          ]
+        },
+        {
+          "name": "Web Breaker",
+          "types": [
+            "Heavy",
+            "Drone"
+          ]
+        },
+        {
+          "name": "Implosion Bolt",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Subspace Rocket",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Particle Cannon",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Option Mount",
+          "types": [
+            ""
+          ]
+        },
+        {
+          "name": "Disruptor",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Plasma Torpedo D",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Subspace Energy Field",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Plasma Torpedo F",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Plasma Torpedo G",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Plasma Torpedo S",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Plasma Torpedo R",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Hellbore",
+          "types": [
+            "Heavy",
+            "Drone"
+          ]
+        },
+        {
+          "name": "Fusion Beam",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Expanding Sphere Generator",
+          "types": [
+            "Heavy",
+            "Drone"
+          ]
+        },
+        {
+          "name": "Excess Damage",
+          "types": []
+        },
+        {
+          "name": "Damage Control",
+          "types": []
+        },
+        {
+          "name": "Sensor",
+          "types": []
+        },
+        {
+          "name": "Scanner",
+          "types": []
+        },
+        {
+          "name": "High Energy Turn Bonus",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Break Down",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Pseudo Plasma Torpedo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone",
+          "types": [
+            "Drone"
+          ]
+        },
+        {
+          "name": "ADD",
+          "types": [
+            "Drone"
+          ]
+        },
+        {
+          "name": "Drone A ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone B ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone C ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone D ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone E ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone F ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone G ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Drone H ammo",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Fighter",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Flag Bridge",
+          "types": []
+        },
+        {
+          "name": "Deck Crew",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "UIM",
+          "types": [
+            "Hit and Run",
+            "External"
+          ]
+        },
+        {
+          "name": "Cloak",
+          "types": [
+            "Hit and Run",
+            "External"
+          ]
+        },
+        {
+          "name": "Derfacs",
+          "types": [
+            "Hit and Run",
+            "External"
+          ]
+        },
+        {
+          "name": "Special Sensor",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Barraks",
+          "types": []
+        },
+        {
+          "name": "Barracks",
+          "types": []
+        },
+        {
+          "name": "Light Rail Gun",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Phaser-W1",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser-W3",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Tachyon Missle",
+          "types": [
+            "Drone"
+          ]
+        },
+        {
+          "name": "Tachyon Gun",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Kinetic Wave Generators",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Pulse Emmitter",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Dark Matter Torpedo",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Dark Matter Bombs",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Heavy Dark Matter Pulsar",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Light Dark Matter Pulsar",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Dimensional Phase Device",
+          "types": []
+        },
+        {
+          "name": "Shield #7",
+          "types": [
+            "External"
+          ]
+        },
+        {
+          "name": "Light Hyper Cannon",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Heavy Hyper Cannon",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "CPU",
+          "types": []
+        },
+        {
+          "name": "Phaser=P1",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser-Q1",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser-Q3",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Energy Howitzer",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "SC",
+          "types": [
+            "Drone"
+          ]
+        },
+        {
+          "name": "Anti Proton Beam",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Anti Proton Lance",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Phaser-A1",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "Phaser-A3",
+          "types": [
+            "Phaser"
+          ]
+        },
+        {
+          "name": "TE-Missiles",
+          "types": [
+            "Drone"
+          ]
+        },
+        {
+          "name": "TC-Beams",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "Quantum Transporters",
+          "types": []
+        },
+        {
+          "name": "T-link",
+          "types": []
+        },
+        {
+          "name": "Phaser-Q2",
+          "types": [
+            "Phaser"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Arcs",
+      "entries": [
+        {
+          "name": "None"
+        },
+        {
+          "name": "360"
+        },
+        {
+          "name": "FA"
+        },
+        {
+          "name": "FX"
+        },
+        {
+          "name": "FP"
+        },
+        {
+          "name": "RF"
+        },
+        {
+          "name": "LF"
+        },
+        {
+          "name": "R"
+        },
+        {
+          "name": "L"
+        },
+        {
+          "name": "RR"
+        },
+        {
+          "name": "LR"
+        },
+        {
+          "name": "RA"
+        },
+        {
+          "name": "RX"
+        },
+        {
+          "name": "RS"
+        },
+        {
+          "name": "LS"
+        },
+        {
+          "name": "FH"
+        },
+        {
+          "name": "RH"
+        },
+        {
+          "name": "LP"
+        },
+        {
+          "name": "RP"
+        },
+        {
+          "name": "AP"
+        },
+        {
+          "name": "LPA"
+        },
+        {
+          "name": "RPA"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StarHold - Manual DAC Roll</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="assignDamageWindowBody">
+    <div class="assignWindowShell">
+      <div class="modalCard assignWindowCard manualDacPromptCard">
+        <div class="modalHeader">
+          <div id="manualDacRollTitle" class="modalTitle">Manual DAC Roll</div>
+          <button id="btnManualDacRollClose" class="iconButton modalCloseBtn" aria-label="Cancel manual DAC allocation">&times;</button>
+        </div>
+        <div class="modalBody manualDacPromptBody">
+          <div id="manualDacRollLead" class="assignModePromptLead">Internal Hit</div>
+          <div id="manualDacRollPromptText" class="assignModePromptText">Enter the 2d6 total for this internal hit.</div>
+          <div id="manualDacRollField" class="formGrid">
+            <label class="formField">
+              <span class="formLabel">2d6 Total (2-12)</span>
+              <input id="manualDacRollInput" type="number" min="2" max="12" step="1" inputmode="numeric" />
+            </label>
+          </div>
+          <div id="manualDacRollError" class="modalHint error manualDacPromptError hidden">Enter a 2d6 total from 2 to 12.</div>
+          <div id="manualDacRollComplete" class="manualDacComplete manualDacHidden">Damage complete</div>
+        </div>
+        <div id="manualDacRollActions" class="modalActions manualDacPromptActions">
+          <button id="btnManualDacRollCancel" class="secondaryButton" type="button">Cancel Remaining</button>
+          <button id="btnManualDacRollApply" type="button">Apply Roll</button>
+        </div>
+      </div>
+    </div>
+    <script src="../desktop-api.js"></script>
+    <script src="manual-dac-roll.js"></script>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StarHold</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brandBadge">SH</div>
+          <div>
+            <div class="brandTitle">STARHOLD</div>
+            <div class="brandSub">SuperLuminal SSD Ship Crop + Damage Allocation Chart</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div id="appVersion" class="appVersionBadge" title="StarHold version" aria-label="StarHold version"></div>
+          <button id="btnSettings" class="iconButton" title="Choose default ship folder" aria-label="Choose default ship folder">&#9881;</button>
+          <button id="btnRotateShips" class="secondaryButton" type="button">Rotate SSDs</button>
+          <button id="btnManualMarkDamage" class="secondaryButton" type="button">Mark Damage</button>
+          <button id="btnManualRemoveDamage" class="secondaryButton" type="button">Remove Damage</button>
+          <button id="btnZoomSection" class="secondaryButton" type="button">Zoom Section</button>
+          <button id="btnResetZoom" class="secondaryButton hidden" type="button">Reset Zoom</button>
+          <button id="btnToggleDamageChart" class="secondaryButton" type="button" aria-expanded="true" aria-controls="damageChartWrap">Minimize DAC</button>
+          <label class="toolbarDamageColorField" for="damageColorSelect">
+            <span class="toolbarDamageColorLabel">Damage Color</span>
+            <div class="selectFieldShell">
+              <select id="damageColorSelect" class="toolbarDamageColorSelect" aria-label="Damage overlay color">
+                <option value="crimson">Red</option>
+                <option value="orange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="emerald">Green</option>
+                <option value="cyan">Cyan</option>
+                <option value="violet">Purple</option>
+                <option value="black">Black</option>
+                <option value="classic">Troubleshooting Color</option>
+              </select>
+              <span class="dropdownChevron" aria-hidden="true"></span>
+            </div>
+          </label>
+          <button id="btnAssignDamage">Assign Damage</button>
+          <button id="btnOptionMounts" class="secondaryButton" type="button" disabled>Assignments</button>
+          <button id="btnSaveGame" class="secondaryButton" type="button" disabled>Save Game</button>
+          <button id="btnLoadGame" class="secondaryButton" type="button">Load Game</button>
+          <button id="btnOpenShip">Open SuperLuminal Ship</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel shipPanel">
+          <div class="panelHeader">
+            <div class="panelTitle">Ship Area</div>
+            <div id="manualDamageHint" class="panelHint">Manual edit off</div>
+          </div>
+
+          <div class="shipSwitcherRow">
+            <select id="shipSelect" class="shipSelect" aria-label="Loaded ships" disabled>
+              <option value="">No ships loaded</option>
+            </select>
+            <button id="btnCloseShip" class="iconButton secondaryButton shipCloseBtn" type="button" aria-label="Close current ship" title="Close current ship" disabled>&times;</button>
+            <div id="shipCount" class="shipSwitcherMeta">0 loaded</div>
+          </div>
+
+          <div class="canvasWrap">
+            <canvas id="shipCanvas"></canvas>
+            <div id="canvasEmpty" class="canvasEmpty">Open a SuperLuminal ship folder to display the ship area.</div>
+          </div>
+          <div id="statusMessage" class="statusMessage">Open a SuperLuminal ship folder or load a saved game.</div>
+        </section>
+
+        <section class="panel chartPanel">
+          <div class="panelHeader">
+            <div>
+              <div class="panelTitle">Damage Allocation Chart</div>
+              <div id="damageChartHint" class="panelHint">Static reference table</div>
+            </div>
+          </div>
+          <div id="damageChartWrap" class="tableWrap">
+            <table id="damageChartTable" class="damageTable"></table>
+          </div>
+          <div id="automaticDacAudit" class="dacAuditPanel hidden"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="optionMountOverlay" class="modalOverlay hidden" aria-hidden="true">
+      <div class="modalCard optionMountCard">
+        <div class="modalHeader">
+          <div class="modalTitle">Assignments</div>
+          <button id="btnOptionMountClose" class="iconButton modalCloseBtn" type="button" aria-label="Close assignment choices">&times;</button>
+        </div>
+        <div class="modalBody optionMountBody">
+          <div id="optionMountLead" class="assignModePromptLead">Choose assignments for this game.</div>
+          <div id="optionMountList" class="optionMountList"></div>
+          <div id="optionMountHint" class="modalHint">The ship JSON is not changed.</div>
+        </div>
+        <div class="modalActions assignModePromptActions optionMountActions">
+          <button id="btnOptionMountCancel" class="secondaryButton" type="button">Ask Later</button>
+          <button id="btnOptionMountSave" type="button">Save Choices</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="weaponSelectOverlay" class="modalOverlay hidden" aria-hidden="true">
+      <div class="modalCard assignWindowCard">
+        <div class="modalHeader">
+          <div id="weaponSelectTitle" class="modalTitle">Choose Weapon Hit</div>
+          <button id="btnWeaponSelectClose" class="iconButton modalCloseBtn" type="button" aria-label="Cancel weapon selection">&times;</button>
+        </div>
+        <div class="modalBody assignModePromptBody">
+          <div id="weaponSelectLead" class="assignModePromptLead">Select which box is hit.</div>
+          <div id="weaponSelectList" class="weaponSelectList"></div>
+        </div>
+        <div class="modalActions assignModePromptActions">
+          <button id="btnWeaponSelectSkip" class="secondaryButton hidden" type="button">Skip</button>
+          <button id="btnWeaponSelectCancel" class="secondaryButton" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../desktop-api.js"></script>
+    <script src="renderer.js"></script>
+  <script src="../damage-mapping.js"></script>
+<script src="../starhold-adapter.js"></script>
+  </body>
+</html>

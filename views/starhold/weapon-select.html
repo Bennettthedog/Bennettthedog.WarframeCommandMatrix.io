@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StarHold - Select Weapon Hit</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="assignDamageWindowBody">
+    <div class="assignWindowShell">
+      <div class="modalCard assignWindowCard manualDacPromptCard">
+        <div class="modalHeader">
+          <div id="weaponSelectWindowTitle" class="modalTitle">Choose Weapon Hit</div>
+          <button id="btnWeaponSelectWindowClose" class="iconButton modalCloseBtn" type="button" aria-label="Cancel weapon selection">&times;</button>
+        </div>
+        <div class="modalBody assignModePromptBody">
+          <div id="weaponSelectWindowLead" class="assignModePromptLead">Select which box is hit.</div>
+          <div id="weaponSelectWindowList" class="weaponSelectList"></div>
+        </div>
+        <div class="modalActions assignModePromptActions">
+          <button id="btnWeaponSelectWindowSkip" class="secondaryButton hidden" type="button">Skip</button>
+          <button id="btnWeaponSelectWindowCancel" class="secondaryButton" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <script src="../desktop-api.js"></script>
+    <script src="weapon-select.js"></script>
+  </body>
+</html>
