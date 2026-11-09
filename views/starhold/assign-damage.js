@@ -63,6 +63,7 @@ function setControlsDisabled(disabled) {
     "assignTotalDamage",
     "assignShieldNumber",
     "assignDamageMode",
+    "assignAttacker",
     "btnAssignDamageSubmit"
   ]
   for (const id of ids) {
@@ -385,6 +386,35 @@ function renderShieldOptions(options, selectedShieldNumber) {
   }
 }
 
+// Each option is one player; its value is that player's damage colour.
+function renderAttackerOptions(attackers, selectedColor) {
+  const field = byId("assignAttackerField")
+  const select = byId("assignAttacker")
+  if (!field || !select) return
+  const list = Array.isArray(attackers) ? attackers.filter((item) => item && item.color) : []
+  field.classList.toggle("hidden", list.length === 0)
+  const previous = select.value
+  select.innerHTML = ""
+  for (const item of list) {
+    const option = document.createElement("option")
+    option.value = String(item.color)
+    option.textContent = `${item.name} (${item.label || item.color})`
+    option.dataset.swatch = String(item.swatch || "")
+    select.appendChild(option)
+  }
+  const wanted = list.some((item) => item.color === previous) ? previous : String(selectedColor || "")
+  if (list.some((item) => item.color === wanted)) select.value = wanted
+  updateAttackerSwatch()
+}
+
+function updateAttackerSwatch() {
+  const select = byId("assignAttacker")
+  const swatch = byId("assignAttackerSwatch")
+  if (!select || !swatch) return
+  const option = select.options[select.selectedIndex]
+  swatch.style.background = option?.dataset.swatch || "transparent"
+}
+
 function syncDamageModeSelect(selectedMode) {
   const select = byId("assignDamageMode")
   if (!select) return
@@ -438,6 +468,7 @@ function applyContext(context) {
 
   renderShieldOptions(ctx.shieldOptions || [], ctx.selectedShieldNumber)
   syncDamageModeSelect(ctx.selectedAssignmentMode)
+  renderAttackerOptions(ctx.attackers, ctx.selectedAttackerColor)
 
   if (totalDamageInput) {
     totalDamageInput.value = ctx.totalDamage != null && ctx.totalDamage !== "" ? String(ctx.totalDamage) : ""
@@ -517,7 +548,8 @@ async function submitAssignDamage() {
       shipIndex: normalizeInteger(ctx.shipIndex, -1),
       totalDamage,
       shieldNumber,
-      assignmentMode
+      assignmentMode,
+      attackerColor: String(byId("assignAttacker")?.value || "")
     })
   } catch {
     state.submitInProgress = false
@@ -548,6 +580,9 @@ function init() {
 
   const modeSelect = byId("assignDamageMode")
   if (modeSelect) modeSelect.addEventListener("change", () => sendPreviewSelection())
+
+  const attackerSelect = byId("assignAttacker")
+  if (attackerSelect) attackerSelect.addEventListener("change", () => updateAttackerSwatch())
 
   const weaponPromptOverlay = byId("assignWeaponPromptOverlay")
   if (weaponPromptOverlay) {

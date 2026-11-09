@@ -6,6 +6,15 @@ let user = null, game = null, online = false, selected = null, mode = 'starhold'
 let station = null, viewRevisions = {}, pollBusy = false, viewLoading = false, savePending = 0, conflict = false;
 const designs = new Map();
 let noticeTimer;
+// Keys match StarHold's damage overlay presets; swatches use their shield stroke colour.
+const PLAYER_COLORS = {crimson: ['Red', '#ff4a4a'], cyan: ['Cyan', '#60d8f6'], emerald: ['Green', '#54da7a'],
+  gold: ['Yellow', '#ffd24c'], violet: ['Purple', '#aa78f8'], orange: ['Orange', '#ffa44a'], black: ['Black', '#0a0a0c']};
+function swatch(color) {
+  const element = document.createElement('span'); element.className = 'player-swatch';
+  element.style.background = PLAYER_COLORS[color]?.[1] || 'transparent';
+  element.title = PLAYER_COLORS[color]?.[0] || 'No colour';
+  return element;
+}
 
 function notice(message, error = false) {
   $('notice').textContent = message; $('notice').classList.toggle('error', error); $('notice').hidden = false;
@@ -82,9 +91,25 @@ function renderGame() {
   $('members').replaceChildren();
   for (const member of game.members) {
     const row = document.createElement('div'); row.className = `member ${member.ready ? 'ready' : ''}`;
-    const name = document.createElement('span'); name.textContent = member.name + (member.id === user.id ? ' · you' : '');
+    const name = document.createElement('span'); name.className = 'member-name';
+    name.append(swatch(member.color), document.createTextNode(member.name + (member.id === user.id ? ' · you' : '')));
     const status = document.createElement('small'); status.textContent = member.ready ? 'Ready' : 'Selecting';
-    row.append(name, status); $('members').append(row);
+    row.append(name, status);
+    if (host) {
+      const picker = document.createElement('select'); picker.className = 'color-picker';
+      picker.setAttribute('aria-label', `Colour for ${member.name}`);
+      for (const [key, [label]] of Object.entries(PLAYER_COLORS)) {
+        const option = document.createElement('option'); option.value = key; option.textContent = label; picker.append(option);
+      }
+      picker.value = member.color;
+      picker.onchange = () => run(async () => {
+        game = await api(`/games/${game.id}/color`, 'POST', {user_id: member.id, color: picker.value});
+        renderGame();
+        if (selected && station) station.matrixUpdate?.(context());
+      });
+      row.append(picker);
+    }
+    $('members').append(row);
   }
   $('shipCount').textContent = game.ships.length;
   $('ships').replaceChildren();
@@ -135,7 +160,8 @@ async function flush() {
 }
 function context() {
   const ship = game.ships.find(x => x.id === selected);
-  return structuredClone({ship, design: designs.get(ship.design_id), host: game.host === user.id});
+  const players = game.members.map(member => ({id: member.id, name: member.name, color: member.color}));
+  return structuredClone({ship, design: designs.get(ship.design_id), host: game.host === user.id, players});
 }
 async function selectShip(id, nextMode, discard = false) {
   if (viewLoading) return;

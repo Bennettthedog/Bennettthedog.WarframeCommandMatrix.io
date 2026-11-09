@@ -2,6 +2,41 @@ let matrixContext = null, matrixBaseline = '', matrixSaving = false;
 const matrixStyle = document.createElement('style');
 matrixStyle.textContent = '#btnOpenShip,#btnLoadGame,#btnSaveGame,#btnSettings,#btnCloseShip,#btnRotateShips,#shipSwitcher{display:none!important} body.matrix-readonly #btnAssignDamage,body.matrix-readonly #btnManualMarkDamage,body.matrix-readonly #btnManualRemoveDamage,body.matrix-readonly #btnOptionMounts{display:none!important}';
 document.head.append(matrixStyle);
+// Player colours: each player's colour is one of StarHold's damage overlay presets.
+function matrixPlayers() {
+  return (matrixContext?.players || []).filter(player => player && Object.prototype.hasOwnProperty.call(DAMAGE_OVERLAY_PRESETS, player.color));
+}
+function matrixLabelDamageColors() {
+  const select = document.getElementById('damageColorSelect');
+  if (!select) return;
+  for (const option of select.options) {
+    const base = DAMAGE_OVERLAY_PRESETS[option.value]?.label || option.value;
+    const names = matrixPlayers().filter(player => player.color === option.value).map(player => player.name);
+    option.textContent = names.length ? `${base} — ${names.join(', ')}` : base;
+  }
+}
+const matrixBaseAssignState = buildAssignDamageWindowStateForActiveShip;
+buildAssignDamageWindowStateForActiveShip = function () {
+  const value = matrixBaseAssignState();
+  value.attackers = matrixPlayers().map(player => ({name: player.name, color: player.color,
+    label: getDamageOverlayLabel(player.color), swatch: DAMAGE_OVERLAY_PRESETS[player.color].shield.stroke}));
+  value.selectedAttackerColor = getDamageOverlayPreset();
+  if (value.available && value.attackers.length) {
+    value.hintText = 'Choose the attacking player; the damage is marked in their colour. Marks shield boxes, then armor boxes if present.';
+  }
+  return value;
+};
+const matrixBaseAssignSubmit = handleAssignDamageWindowSubmit;
+handleAssignDamageWindowSubmit = function (payload) {
+  const color = String(payload?.attackerColor || '');
+  if (Object.prototype.hasOwnProperty.call(DAMAGE_OVERLAY_PRESETS, color)) {
+    // Set the colour for this assignment without re-syncing the open dialog mid-submit.
+    state.damageOverlayPreset = normalizeDamageOverlayPreset(color);
+    renderDamageColorSelector();
+    storeDamageOverlayPresetToStorage(state.damageOverlayPreset);
+  }
+  return matrixBaseAssignSubmit(payload);
+};
 function matrixDamage() {
   const ship = getActiveShipRecord();
   return {runtimeDamage: structuredClone(ensureShipRuntimeDamageState(ship)), damageAssignment: structuredClone(ship?.damageAssignment || null)};
@@ -14,6 +49,7 @@ window.matrixLoad = async context => {
   state.ships = [ship];
   activateLoadedShip(0, {quiet: true});
   document.body.classList.toggle('matrix-readonly', !context.host);
+  matrixLabelDamageColors();
   matrixBaseline = JSON.stringify(matrixDamage());
 };
 window.matrixFlush = async () => {
@@ -30,6 +66,8 @@ window.matrixFlush = async () => {
 };
 window.matrixUpdate = context => {
   if (!matrixContext || matrixContext.ship.id !== context.ship.id || matrixSaving) return;
+  matrixContext.players = context.players;
+  matrixLabelDamageColors();
   if (context.ship.damage_revision !== matrixContext.ship.damage_revision && !window.matrixHasChanges()) {
     matrixContext = context;
     const ship = getActiveShipRecord();

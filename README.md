@@ -23,6 +23,10 @@ controls and move-chart highlights save automatically, and only you can see them
 Select another player's ship to open **StarHold**, the shared view. Only the host
 assigns damage, and it updates the owner's Veil.
 
+Each player gets a colour when they join, shown beside their name. The host can
+change any player's colour from the player list. When assigning damage, the host
+picks the **Attacking Player**, and the hit boxes are marked in that player's colour.
+
 Veil's **Set weapon status** control initializes phaser capacitors before locking
 turn 1. **Option mount power** opens the power-record setup. Both are private to
 the ship's owner.
