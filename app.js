@@ -92,14 +92,26 @@ function renderGame() {
   const host = game.host === user.id;
   $('roomName').textContent = game.name; $('phase').textContent = game.status;
   $('copyCode').textContent = game.code; $('role').textContent = host ? 'Host' : 'Player';
+  // One collapsible entry per player: colour, name, ready status, then their ships.
+  // Owners of ships who are no longer players go last.
   $('members').replaceChildren();
-  for (const member of game.members) {
-    const row = document.createElement('div'); row.className = `member ${member.ready ? 'ready' : ''}`;
+  const owners = [...game.members.map(x => x.id), ...game.ships.map(x => x.owner)].filter((id, i, all) => all.indexOf(id) === i);
+  for (const ownerId of owners) {
+    const ships = game.ships.filter(x => x.owner === ownerId);
+    const member = game.members.find(x => x.id === ownerId);
+    const group = document.createElement('details'); group.className = `fleet-group ${member?.ready ? 'ready' : ''}`;
+    group.open = !collapsedOwners.has(ownerId);
+    group.ontoggle = () => { if (group.open) collapsedOwners.delete(ownerId); else collapsedOwners.add(ownerId); };
+    const summary = document.createElement('summary');
     const name = document.createElement('span'); name.className = 'member-name';
-    name.append(swatch(member.color), document.createTextNode(member.name + (member.id === user.id ? ' · you' : '')));
-    const status = document.createElement('small'); status.textContent = member.ready ? 'Ready' : 'Selecting';
-    row.append(name, status);
-    if (host) {
+    if (member) name.append(swatch(member.color));
+    name.append(document.createTextNode((member?.name || 'Player') + (ownerId === user.id ? ' · you' : '')));
+    const status = document.createElement('small'); status.className = 'ready-status';
+    status.textContent = !member ? 'Left game' : member.ready ? 'Ready ✓' : 'Selecting';
+    const count = document.createElement('span'); count.className = 'count'; count.textContent = ships.length;
+    count.title = `${ships.length} ship${ships.length === 1 ? '' : 's'}`;
+    summary.append(name, status, count); group.append(summary);
+    if (host && member) {
       const picker = document.createElement('select'); picker.className = 'color-picker';
       picker.setAttribute('aria-label', `Colour for ${member.name}`);
       for (const [key, [label]] of Object.entries(PLAYER_COLORS)) {
@@ -111,27 +123,12 @@ function renderGame() {
         renderGame();
         if (selected && station) station.matrixUpdate?.(context());
       });
-      row.append(picker);
+      group.append(picker);
     }
-    $('members').append(row);
-  }
-  $('shipCount').textContent = game.ships.length;
-  $('ships').replaceChildren();
-  // Group ships under their commander, in table order; owners no longer in the member list go last.
-  const owners = [...game.members.map(x => x.id), ...game.ships.map(x => x.owner)].filter((id, i, all) => all.indexOf(id) === i);
-  for (const ownerId of owners) {
-    const ships = game.ships.filter(x => x.owner === ownerId);
-    if (!ships.length) continue;
-    const member = game.members.find(x => x.id === ownerId);
-    const group = document.createElement('details'); group.className = 'fleet-group';
-    group.open = !collapsedOwners.has(ownerId);
-    group.ontoggle = () => { if (group.open) collapsedOwners.delete(ownerId); else collapsedOwners.add(ownerId); };
-    const summary = document.createElement('summary');
-    const name = document.createElement('span'); name.className = 'member-name';
-    if (member) name.append(swatch(member.color));
-    name.append(document.createTextNode((member?.name || 'Player') + (ownerId === user.id ? ' · you' : '')));
-    const count = document.createElement('span'); count.className = 'count'; count.textContent = ships.length;
-    summary.append(name, count); group.append(summary);
+    if (!ships.length) {
+      const empty = document.createElement('p'); empty.className = 'hint no-ships'; empty.textContent = 'No ships yet.';
+      group.append(empty);
+    }
     for (const ship of ships) {
       const row = document.createElement('div'); row.className = 'ship-row';
       row.append(button(ship.name, () => selectShip(ship.id, ship.owner === user.id ? 'veil' : 'starhold'), `ship-button ${selected === ship.id ? 'selected' : ''}`));
@@ -142,9 +139,8 @@ function renderGame() {
       }, 'subtle remove-ship'));
       group.append(row);
     }
-    $('ships').append(group);
+    $('members').append(group);
   }
-  if (!game.ships.length) $('ships').textContent = 'No ships selected yet.';
   $('lobby').hidden = game.status !== 'lobby';
   $('hostControls').hidden = !host;
   $('startGame').hidden = game.status === 'playing';
