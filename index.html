@@ -27,7 +27,7 @@
       <h2 class="saved-title">Resume an engagement</h2><div id="savedGames" class="saved-games"></div>
     </section>
     <section id="game" hidden>
-      <div class="game-header"><div><button id="back" class="subtle">← Engagements</button><h1 id="roomName"></h1></div><div class="room-meta"><span id="phase" class="badge"></span><button id="copyCode" class="code-button" title="Copy join code"></button><span id="role" class="badge"></span></div></div>
+      <div class="game-header"><div><button id="back" class="subtle">← Engagements</button><h1 id="roomName"></h1></div><div class="room-meta"><button id="spectateButton" class="secondary" title="Full-screen StarHold ship displays · arrow keys switch ships">Spectator mode</button><span id="phase" class="badge"></span><button id="copyCode" class="code-button" title="Copy join code"></button><span id="role" class="badge"></span></div></div>
       <div class="game-layout">
         <aside class="panel roster"><p class="eyebrow">AT THE TABLE</p><div id="members"></div><p class="hint">Veil is private to the ship’s owner. StarHold is shared with this game.</p><div id="hostControls" class="host-controls" hidden><p class="eyebrow">HOST CONTROLS</p><button id="startGame">Start game</button><button id="pauseGame" class="secondary">Pause game</button><button id="reopenLobby" class="subtle">Reopen lobby</button></div><details><summary>Game activity</summary><div id="activity"></div></details></aside>
         <div class="workspace">
@@ -39,6 +39,7 @@
   </main>
   <dialog id="ownerChoice" class="choice-dialog docked" aria-labelledby="ownerChoiceTitle"><p class="eyebrow" id="ownerChoiceShip"></p><h2 id="ownerChoiceTitle"></h2><p id="ownerChoiceLead" class="hint"></p><div id="ownerChoiceOptions" class="choice-options"></div><div class="actions"><button id="ownerChoiceSkip" type="button" class="secondary">Skip</button></div></dialog>
   <dialog id="hostWait" class="choice-dialog" aria-labelledby="hostWaitTitle"><p class="eyebrow">OWNER’S CHOICE</p><h2 id="hostWaitTitle"></h2><p id="hostWaitLead" class="hint"></p><p id="hostWaitOptions" class="choice-summary"></p><p id="hostWaitStatus" class="hint" role="status"></p><div class="actions"><button id="hostWaitLocal" type="button" class="secondary">Choose for them</button><button id="hostWaitCancel" type="button" class="subtle">Cancel</button></div></dialog>
+  <section id="spectator" class="spectator" aria-label="Spectator mode: StarHold ship displays" tabindex="-1" hidden><header class="spectator-title"><h1 id="spectatorTitle"></h1><p id="spectatorClass"></p></header><div id="spectatorStage" class="spectator-stage"></div><p id="spectatorEmpty" class="spectator-empty" hidden>No ships in this game yet.</p><div class="spectator-caption" aria-live="polite"><span id="spectatorCount"></span><small class="spectator-keys">← → switch ships · Esc exits</small></div><button id="spectatorFullscreen" type="button" class="secondary spectator-fullscreen">Fullscreen</button></section>
   <div id="notice" role="status" aria-live="polite" hidden></div>
   <footer><span>WARFRAME COMMAND MATRIX</span><span>VEIL / STARHOLD &nbsp; · &nbsp; LOCAL GAME SERVER</span></footer>
 </body>

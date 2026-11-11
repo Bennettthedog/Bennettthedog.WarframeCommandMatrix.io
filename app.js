@@ -63,6 +63,7 @@ async function connect() {
   notice('Connected to the host’s game server.');
 }
 async function dashboard() {
+  closeSpectator();
   station?.dispose?.();
   game = null; selected = null; station = null; $('stationContainer').replaceChildren();
   renderOwnerChoice();
@@ -82,6 +83,7 @@ async function refreshDesigns() {
   if (!catalog.length) {const option = document.createElement('option'); option.value = ''; option.textContent = 'No ships in the host library'; $('designSelect').append(option);}
 }
 async function enterGame(value) {
+  closeSpectator();
   station?.dispose?.();
   game = value; selected = null; conflict = false; station = null; answeredSaveRequest = game.save_request;
   $('stationContainer').replaceChildren(); $('emptyStation').hidden = false;
@@ -210,6 +212,7 @@ function renderOwnerChoice() {
   if (!choice) {ownerChoiceId = null; if (dialog.open) dialog.close(); return;}
   if (choice.id === ownerChoiceId && dialog.open) return;
   ownerChoiceId = choice.id;
+  closeSpectator(); // The owner must see the prompt and their ship.
   const ship = game.ships.find(x => x.id === choice.ship_id);
   $('ownerChoiceShip').textContent = `${ship?.name || 'Your ship'} · the host is assigning damage`;
   $('ownerChoiceTitle').textContent = choice.prompt.title;
@@ -278,6 +281,116 @@ async function askOwner(shipId, prompt) {
   });
 }
 
+// ---- Spectator mode: full-viewport, read-only StarHold ship images with damage. Arrow keys
+// switch ships; the only control is Fullscreen. It mounts its own StarHold instance with host
+// rights off, so it never saves, and leaves the regular ship station (and its edits) untouched.
+const SPECTATOR_CSS = `
+:host{height:100%}
+.native-body,#app{height:100%!important;min-height:0!important}
+#app{display:flex!important;flex-direction:column}
+#app>.topbar,.chartPanel,.shipPanel>.panelHeader,.shipSwitcherRow,#statusMessage,#automaticDacAudit{display:none!important}
+#app .layout{display:flex!important;flex:1;min-height:0!important;padding:0!important;gap:0}
+#app .shipPanel{flex:1;border:0;border-radius:0;background:transparent}
+#app .canvasWrap{flex:1;margin:0;min-height:0!important;border:0;border-radius:0}
+#shipCanvas{cursor:default!important}`;
+// spectatorShipId is the ship being switched to; spectatorShownId is the one on screen. The title
+// and caption follow the shown ship so they always match the image.
+let spectating = false, spectatorShipId = null, spectatorShownId = null, spectatorStation = null, spectatorLoad = 0, spectatorIdleTimer;
+function spectatorContext(ship) {
+  const players = game.members.map(member => ({id: member.id, name: member.name, color: member.color}));
+  return structuredClone({ship, design: designs.get(ship.design_id), host: false, players});
+}
+// Ship class from the design: empire and hull type, e.g. "Training Frigate" (as StarHold labels it).
+function shipClass(ship) {
+  const design = designs.get(ship.design_id), data = design?.doc?.shipData || {};
+  const label = [data.empire, data.type].map(x => String(x || '').trim()).filter(Boolean).join(' ');
+  return label || (design?.name && design.name !== ship.name ? design.name : '');
+}
+function renderSpectatorCaption() {
+  const ships = game?.ships || [], index = ships.findIndex(x => x.id === spectatorShownId), ship = ships[index];
+  $('spectatorEmpty').hidden = ships.length > 0;
+  $('spectatorTitle').textContent = ship?.name || (ships.length ? '' : game?.name || '');
+  // No class line when it would just repeat the name (compared ignoring case and spacing).
+  const same = text => String(text || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  const label = ship ? shipClass(ship) : '';
+  $('spectatorClass').textContent = label && same(label) !== same(ship.name) ? label : '';
+  $('spectatorCount').textContent = ship ? `Ship ${index + 1} / ${ships.length}` : '';
+}
+async function showSpectatorShip(shipId) {
+  const ship = game?.ships.find(x => x.id === shipId);
+  const load = ++spectatorLoad;
+  spectatorShipId = ship?.id || null;
+  if (!ship) {spectatorStation?.dispose?.(); spectatorStation = null; spectatorShownId = null; $('spectatorStage').replaceChildren(); renderSpectatorCaption(); return;}
+  if (!designs.has(ship.design_id)) designs.set(ship.design_id, await api(`/designs/${ship.design_id}`));
+  if (load !== spectatorLoad || !spectating) return;
+  // Mount the new ship invisibly on top of the old one (it still has layout, so its canvas can
+  // draw). Only once it is styled and drawn is it revealed and the old one removed, in one frame,
+  // so the full StarHold UI or a blank canvas never flashes while it loads.
+  const layer = document.createElement('div'); layer.className = 'spectator-layer loading'; $('spectatorStage').append(layer);
+  let next;
+  try {
+    const {mountStation} = await import('./native/station.js');
+    next = await mountStation(layer, 'starhold', spectatorContext(ship));
+    const style = document.createElement('style'); style.textContent = SPECTATOR_CSS;
+    layer.querySelector('ship-station').shadowRoot.append(style);
+    window.dispatchEvent(new Event('resize'));
+    await new Promise(resolve => requestAnimationFrame(resolve));
+  } catch (error) {layer.remove(); throw error;}
+  if (load !== spectatorLoad || !spectating) {next.dispose(); layer.remove(); return;}
+  layer.classList.remove('loading');
+  spectatorStation?.dispose?.(); spectatorStation = next; spectatorShownId = ship.id; renderSpectatorCaption();
+  for (const old of [...$('spectatorStage').children]) if (old !== layer) old.remove();
+}
+function stepSpectator(delta) {
+  const ships = game?.ships || [];
+  if (!ships.length) return;
+  const index = ships.findIndex(x => x.id === spectatorShipId);
+  const next = ships[((index < 0 ? 0 : index + delta) % ships.length + ships.length) % ships.length];
+  if (next.id !== spectatorShipId || !spectatorStation) run(() => showSpectatorShip(next.id));
+}
+function openSpectator() {
+  if (!game || spectating) return;
+  spectating = true; $('spectator').hidden = false; $('spectator').focus();
+  document.documentElement.classList.add('spectating');
+  wakeSpectator();
+  run(() => showSpectatorShip(game.ships.some(x => x.id === selected) ? selected : game.ships[0]?.id));
+}
+function closeSpectator() {
+  if (!spectating) return;
+  spectating = false; spectatorLoad++; spectatorShipId = null; spectatorShownId = null;
+  spectatorStation?.dispose?.(); spectatorStation = null;
+  $('spectatorStage').replaceChildren(); $('spectator').hidden = true;
+  document.documentElement.classList.remove('spectating');
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+// Keep spectator in step with the 2-second poll: new damage, renamed/removed ships.
+function updateSpectator() {
+  if (!spectating) return;
+  const ship = game.ships.find(x => x.id === spectatorShipId);
+  if (!ship) {if (game.ships.length) stepSpectator(0); else run(() => showSpectatorShip(null)); return;}
+  renderSpectatorCaption();
+  spectatorStation?.matrixUpdate?.(spectatorContext(ship));
+}
+// The caption and Fullscreen button fade out when the mouse rests.
+function wakeSpectator() {
+  $('spectator').classList.remove('idle'); clearTimeout(spectatorIdleTimer);
+  spectatorIdleTimer = setTimeout(() => $('spectator').classList.add('idle'), 2500);
+}
+$('spectateButton').onclick = openSpectator;
+$('spectator').onmousemove = wakeSpectator;
+$('spectatorFullscreen').onclick = () => run(async () => {
+  if (document.fullscreenElement) await document.exitFullscreen(); else await $('spectator').requestFullscreen();
+});
+document.addEventListener('fullscreenchange', () => {
+  $('spectatorFullscreen').textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';
+});
+document.addEventListener('keydown', event => {
+  if (!spectating || event.altKey || event.ctrlKey || event.metaKey) return;
+  const step = {ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1}[event.key];
+  if (step) {event.preventDefault(); stepSpectator(step); wakeSpectator();}
+  else if (event.key === 'Escape' && !document.fullscreenElement) {event.preventDefault(); closeSpectator();}
+});
+
 window.Matrix = {
   notice, askOwner,
   canEdit: () => online && game?.status === 'playing' && !conflict && !viewLoading,
@@ -307,7 +420,7 @@ $('authForm').onsubmit = event => {
     await dashboard();
   });
 };
-$('logout').onclick = () => run(async () => {await flush(); await api('/logout', 'POST', {}); sessionStorage.removeItem(`matrix-token:${base}`); token = ''; user = null; game = null; station?.dispose?.(); station = null; $('stationContainer').replaceChildren(); screen('gateway');});
+$('logout').onclick = () => run(async () => {await flush(); await api('/logout', 'POST', {}); sessionStorage.removeItem(`matrix-token:${base}`); token = ''; closeSpectator(); user = null; game = null; station?.dispose?.(); station = null; $('stationContainer').replaceChildren(); screen('gateway');});
 $('createForm').onsubmit = event => {event.preventDefault(); run(async () => enterGame(await api('/games', 'POST', {name: $('gameName').value})));};
 $('joinForm').onsubmit = event => {event.preventDefault(); run(async () => enterGame(await api('/join', 'POST', {code: $('joinCode').value})));};
 $('back').onclick = () => run(async () => {await flush(); await dashboard();});
@@ -362,7 +475,7 @@ setInterval(async () => {
       const id = game.id, updated = await api(`/games/${id}`);
       if (!game || game.id !== id) return;
       if (updated.revision !== game.revision) {
-        game = updated; renderGame();
+        game = updated; renderGame(); updateSpectator();
         answerSaveRequest();
         if (selected && station && !savePending) {
           const current = context();

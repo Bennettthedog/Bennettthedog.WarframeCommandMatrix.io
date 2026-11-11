@@ -58,3 +58,24 @@ html{scrollbar-gutter:stable}
 .fleet-group>.color-picker{display:block;width:calc(100% - 14px);margin:0 0 6px 14px;padding:5px 8px;font-size:11px;border-radius:8px}
 .fleet-group>.no-ships{margin:0 0 8px 14px;font-size:11px}
 .member{flex-wrap:wrap;align-items:center}.member-name{display:inline-flex;align-items:center;gap:7px;min-width:0;overflow-wrap:anywhere}.player-swatch{flex:none;width:12px;height:12px;border-radius:50%;border:1px solid rgba(255,255,255,.6);box-shadow:0 0 6px rgba(0,0,0,.4)}.member .color-picker{flex:1 0 100%;padding:5px 8px;font-size:11px;border-radius:8px}
+/* Spectator mode: a full-viewport, read-only StarHold ship display. Stations are stacked so a
+   newly loaded ship replaces the previous one without a blank frame. */
+.spectator{position:fixed;inset:0;z-index:900;display:flex;flex-direction:column;background:#0b0c10;color:var(--text);outline:none}
+.spectator[hidden]{display:none}
+html.spectating{overflow:hidden;scrollbar-gutter:auto}
+/* Title band at the top centre; the ship area takes the rest, so the title never covers the image. */
+.spectator-title{flex:none;min-height:56px;padding:12px 130px 10px;text-align:center;border-bottom:1px solid var(--border)}
+.spectator-title h1{margin:0;font-size:24px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;overflow-wrap:anywhere}
+.spectator-title p{margin:3px 0 0;color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.spectator-title p:empty{display:none}
+.spectator-stage{position:relative;flex:1;min-height:0}
+.spectator-stage>.spectator-layer{position:absolute;inset:0}
+.spectator-layer>ship-station{height:100%}
+.spectator-layer.loading{visibility:hidden}
+.spectator-empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--muted);font-size:18px}
+.spectator-caption{position:absolute;left:18px;bottom:14px;display:flex;align-items:baseline;gap:10px;padding:6px 12px;border-radius:10px;background:rgba(11,12,16,.72);pointer-events:none;transition:opacity .4s}
+.spectator-caption span{font-weight:600;letter-spacing:.04em}.spectator-caption small{color:var(--muted)}
+.spectator-fullscreen{position:absolute;top:14px;right:14px;z-index:1;transition:opacity .4s}
+.spectator.idle .spectator-caption,.spectator.idle .spectator-fullscreen{opacity:0}
+.spectator.idle{cursor:none}
+@media(max-width:700px){.spectator-keys{display:none}.spectator-title{padding:10px 16px 8px;text-align:left;padding-right:130px}.spectator-title h1{font-size:18px}}
