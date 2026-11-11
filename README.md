@@ -1,14 +1,3 @@
-# Command Matrix — website
-
-This is the static website for Command Matrix, published with GitHub Pages.
-It contains only public HTML, CSS, JavaScript, images and rule tables. It has no
-database, passwords or server credentials. The game server runs separately on the
-host's PC and is not part of this repository.
-
-The website connects to the backend address in `config.js`. Accounts, games, ship
-designs and saved state all live on that server. The website keeps only your sign-in
-session token, in the browser tab's `sessionStorage`.
-
 ## Playing
 
 1. Sign in with the player name and password your host gave you. There is no
@@ -26,27 +15,3 @@ assigns damage, and it updates the owner's Veil.
 Each player gets a colour when they join, shown beside their name. The host can
 change any player's colour from the player list. When assigning damage, the host
 picks the **Attacking Player**, and the hit boxes are marked in that player's colour.
-
-Veil's **Set weapon status** control initializes phaser capacitors before locking
-turn 1. **Option mount power** opens the power-record setup. Both are private to
-the ship's owner.
-
-Use **Save now** before closing the tab. If another window changed the same ship,
-use **Reload ship** to discard local edits and load the saved version.
-
-If the page shows **Server offline**, the host's game server or tunnel is not
-running. The page retries automatically.
-
-## Files
-
-| Path | Purpose |
-| --- | --- |
-| `index.html`, `app.js`, `site.css` | The website shell: sign-in, lobby and fleet. |
-| `config.js` | Public backend address. Never put secrets here. |
-| `native/station.js` | Mounts the Veil and StarHold stations with scoped styles. |
-| `native/generated/` | Pre-built station modules. No build step is needed to host. |
-| `views/` | Source copies of the original Veil and StarHold code, and the adapters that add multiplayer behavior. |
-| `assets/` | Rule tables (rolls and shipyard data). |
-
-All links are relative, so the site works from a repository Pages URL. Open it over
-HTTP, not as a `file://` page; browser modules and the server's origin check need HTTP.
