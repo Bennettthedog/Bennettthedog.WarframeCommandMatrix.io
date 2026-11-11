@@ -9,6 +9,34 @@ destroyedBanner.style.cssText = 'display:none;background:#702d35;color:white;pad
 destroyedBanner.textContent = 'SHIP DESTROYED — assigned by game host';
 document.getElementById('contentPanel').prepend(destroyedBanner);
 
+// The ship image is the station's primary scale. It is as large as possible while fitting the
+// width beside the energy panel and staying within one screen height (players may scroll to
+// it); the station is made exactly that tall and the image panel exactly that wide. The energy
+// allocation panel shares the height and scrolls within it. Phone layouts keep their CSS size.
+const MATRIX_SCREEN_MARGIN = 16, MATRIX_MIN_IMAGE_HEIGHT = 300;
+function matrixFitImagePanel() {
+  const body = document.getElementById('contentBody'), panel = document.getElementById('imagePanel');
+  const props = document.getElementById('propsPanel'), canvas = document.getElementById('canvas');
+  const img = getActiveTab()?.imageObj;
+  if (!body || !panel || !props || !canvas) return;
+  const set = (height, flex) => {
+    if (body.style.height === height && panel.style.flex === flex) return;
+    body.style.height = height; panel.style.flex = flex; requestAnimationFrame(renderCanvas);
+  };
+  if (!img?.width || !img?.height || getComputedStyle(body).flexDirection === 'column') return set('', '');
+  // Measure only things that do not depend on the size set here, so the fit is stable.
+  const bodyRect = body.getBoundingClientRect(), canvasRect = canvas.getBoundingClientRect();
+  const extraY = bodyRect.height - canvasRect.height, extraX = panel.getBoundingClientRect().width - canvasRect.width;
+  const maxWidth = body.clientWidth - props.getBoundingClientRect().width - extraX;
+  const maxHeight = Math.max(MATRIX_MIN_IMAGE_HEIGHT, globalThis.innerHeight - extraY - MATRIX_SCREEN_MARGIN);
+  const scale = Math.min(maxWidth / img.width, maxHeight / img.height);
+  set(`${Math.ceil(img.height * scale + extraY)}px`, `0 1 ${Math.floor(img.width * scale + extraX)}px`);
+}
+window.addEventListener('resize', matrixFitImagePanel);
+// Refit when the station's width changes (window, sidebar or page scrollbar); the window
+// resize listener above covers screen height. The fit does not depend on what it sets.
+new ResizeObserver(() => matrixFitImagePanel()).observe(document.getElementById('contentBody'));
+
 function matrixPrivate() {
   const tab = getActiveTab();
   if (!tab?.doc) return {};
@@ -55,6 +83,7 @@ async function matrixLoad(context) {
   await ensureTabImageLoaded(tab);
   matrixApplyDamage(context.ship.damage);
   renderTabs(); updateShipControlsVisibility(); updateTurnControlsUI();
+  matrixFitImagePanel();
   matrixBaseline = JSON.stringify(matrixPrivate());
 }
 
@@ -79,6 +108,12 @@ window.matrixUpdate = context => {
 };
 window.matrixHasChanges = () => matrixContext && JSON.stringify(matrixPrivate()) !== matrixBaseline;
 window.matrixLoad = matrixLoad;
+// Uncover the ship when the owner must choose which box is hit: close the Move Chart (its
+// highlights are already kept). Prompts the owner opened themselves are left alone.
+window.matrixRevealShip = () => {
+  const close = Array.from(document.querySelectorAll('#moveChartOverlay .modalActions button')).find(b => b.textContent === 'Close');
+  close?.click();
+};
 function matrixSetupButton(label, action) {
   const button = document.createElement('button'); button.textContent = label;
   button.onclick = async () => {

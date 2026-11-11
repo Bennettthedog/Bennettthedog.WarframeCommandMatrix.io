@@ -11,7 +11,7 @@ const layout = `
 :host{display:block;min-width:0;color:var(--text);font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif}
 .native-body{display:block;width:100%;height:auto;min-height:0;padding:0;margin:0;background:transparent;color:var(--text)}
 #main,#app{width:100%;height:auto;min-height:680px;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:visible}
-#main{display:flex;flex-direction:column}
+#main{display:flex;flex-direction:column;min-height:0}
 #leftPanel{width:100%;min-width:0;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;overflow:visible;border-right:0;border-bottom:1px solid var(--border)}
 #leftPanel>.panelHeader,#contentTopBar,#app>.topbar .brand,#appVersion,.shipSwitcherRow{display:none!important}
 #btnSaveNow{display:none!important}
@@ -20,9 +20,17 @@ const layout = `
 #leftPanel .stack{display:flex;flex-direction:row;gap:8px;flex-wrap:wrap;align-items:center}
 #leftPanel .stack button{width:auto;max-width:none;padding:8px 12px;font-size:12px}
 #turnCounter{font-size:13px;padding:0 8px}
-#contentPanel{min-height:620px}
-#contentBody{min-height:620px;height:calc(100vh - 310px);max-height:1100px}
-#imagePanel{min-width:0} #propsPanel{width:310px;min-width:260px}
+#contentPanel{min-height:0}
+/* Veil: the ship image is the primary scale. veil-adapter.js makes it as large as fits the
+   width beside the energy panel and one screen height, then sets this height and the image panel's
+   width from it, so the energy allocation panel (which scrolls inside) is exactly as tall as
+   the image. When the screen height limits the image, the pair is centred. The height below
+   is only a fallback. */
+#contentBody{flex:none;min-height:320px;height:calc(100vh - 310px);max-height:none;justify-content:center}
+#imagePanel{min-width:0} #propsPanel{flex:0 0 310px;width:310px;min-width:260px;min-height:0}
+/* The canvas is taken out of flow so its drawing buffer can never feed back into the layout. */
+#canvasWrap{position:relative}
+#canvas{position:absolute;top:10px;left:10px;width:calc(100% - 20px);height:calc(100% - 20px)}
 #app>.topbar{padding:10px 12px;justify-content:flex-start;border-radius:0;background:var(--panel2)}
 #app>.topbar .toolbar{justify-content:flex-start;flex-wrap:wrap;width:100%}
 #app>.topbar button{padding:8px 12px;font-size:12px}

@@ -37,6 +37,26 @@ handleAssignDamageWindowSubmit = function (payload) {
   }
   return matrixBaseAssignSubmit(payload);
 };
+// When damage needs a choice of which box is hit (e.g. which phaser), the ship's owner makes it.
+// Only labels go to the owner; the host keeps the rule values and applies the answer. The host
+// can still choose for them (the original prompt) or cancel, and chooses as before on own ships.
+const matrixBasePrompt = promptForDamagePromptItems;
+promptForDamagePromptItems = async function (chartCellLabel, promptItems, options = {}) {
+  const items = (Array.isArray(promptItems) ? promptItems : []).filter(Boolean).filter(item => getDamagePromptItemValue(item) != null);
+  if (items.length <= 1 || !matrixContext?.host) return matrixBasePrompt(chartCellLabel, promptItems, options);
+  const title = String(options.title || getDamagePromptTitle(chartCellLabel)).trim() || 'Internal';
+  const prompt = {title: `${title} Hit`, lead: String(options.lead || 'Select which box is hit.').trim() || 'Select which box is hit.',
+    allowSkip: options.allowSkip === true,
+    options: items.map((item, index) => ({optionId: String(index), label: String(item?.prompt?.label || `Option ${index + 1}`).slice(0, 200),
+      detail: String(item?.prompt?.detail || '').slice(0, 500)}))};
+  let answer;
+  try {answer = await parent.Matrix.askOwner(matrixContext.ship.id, prompt);}
+  catch (error) {parent.Matrix.notice(`Could not ask the owner (${error.message}). Choose the box yourself.`, true); answer = {local: true};}
+  if (answer?.local) return matrixBasePrompt(chartCellLabel, promptItems, options);
+  if (!answer) return null;
+  if (answer.skip) return {skipSelection: true};
+  return getDamagePromptItemValue(items[Number(answer.optionId)]) ?? null;
+};
 function matrixDamage() {
   const ship = getActiveShipRecord();
   return {runtimeDamage: structuredClone(ensureShipRuntimeDamageState(ship)), damageAssignment: structuredClone(ship?.damageAssignment || null)};
