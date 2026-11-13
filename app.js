@@ -89,10 +89,16 @@ async function enterGame(value) {
   $('stationContainer').replaceChildren(); $('emptyStation').hidden = false;
   screen('game'); renderGame(); await refreshDesigns();
 }
+// Game clock: turn.impulse, 1.0 to 1.32, then 2.0. Only the host advances it.
+const impulseLabel = value => `${value.turn ?? 1}.${value.impulse ?? 0}`;
+let advancingImpulse = false;
 function renderGame() {
   if (!game) return;
   const host = game.host === user.id;
   $('roomName').textContent = game.name; $('phase').textContent = game.status;
+  $('impulse').textContent = `Impulse ${impulseLabel(game)}`;
+  $('nextImpulse').hidden = !host || game.status !== 'playing';
+  $('nextImpulse').disabled = advancingImpulse;
   $('copyCode').textContent = game.code; $('role').textContent = host ? 'Host' : 'Player';
   // One collapsible entry per player: colour, name, ready status, then their ships.
   // Owners of ships who are no longer players go last.
@@ -153,7 +159,7 @@ function renderGame() {
   $('readyButton').textContent = ready ? 'Ready ✓ · Change' : 'Mark ready';
   $('readyButton').classList.toggle('active', ready);
   $('activity').replaceChildren();
-  for (const event of game.events) {const line = document.createElement('div'); line.textContent = `${event.actor}: ${event.kind}${event.ship_id ? ` · ${game.ships.find(x => x.id === event.ship_id)?.name || 'ship'}` : ''}`; $('activity').append(line);}
+  for (const event of game.events) {const line = document.createElement('div'); line.textContent = `${event.turn == null ? '' : `[${impulseLabel(event)}] `}${event.actor}: ${event.kind}${event.ship_id ? ` · ${game.ships.find(x => x.id === event.ship_id)?.name || 'ship'}` : ''}`; $('activity').append(line);}
   const ship = game.ships.find(x => x.id === selected);
   document.body.dataset.theme = ship ? mode : 'starhold';
   $('selectedName').textContent = ship?.name || 'Choose a ship from the fleet';
@@ -430,7 +436,17 @@ for (const [id, status] of [['startGame', 'playing'], ['pauseGame', 'paused'], [
   $(id).onclick = () => run(async () => {await flush(); game = await api(`/games/${game.id}/status`, 'POST', {status}); renderGame();});
 }
 $('selectShipForm').onsubmit = event => {event.preventDefault(); run(async () => {game = await api(`/games/${game.id}/ships`, 'POST', {design_id: $('designSelect').value, name: $('shipName').value.trim()}); $('shipName').value = ''; renderGame();});};
-$('veilTab').onclick = () => run(() => selectShip(selected, 'veil'));
+$('nextImpulse').onclick = () => run(async () => {
+  advancingImpulse = true; renderGame();
+  try {
+    game = await api(`/games/${game.id}/impulse`, 'POST', {from: {turn: game.turn, impulse: game.impulse}});
+  } catch (error) {
+    // Already moved on (another tab or a double click): show the current impulse.
+    if (error.status === 409) game = await api(`/games/${game.id}`);
+    throw error;
+  } finally {advancingImpulse = false; renderGame();}
+});
+$('veilTab').onclick =() => run(() => selectShip(selected, 'veil'));
 $('starholdTab').onclick = () => run(() => selectShip(selected, 'starhold'));
 // ---- Save game (host only): every player's tab saves its pending edits, then the host
 // PC writes the whole game to disk. Players who don't answer keep their last autosave.

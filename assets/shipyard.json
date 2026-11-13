@@ -637,6 +637,18 @@
           "types": [
             "Phaser"
           ]
+        },
+        {
+          "name": "Ion Cannon",
+          "types": [
+            "Heavy"
+          ]
+        },
+        {
+          "name": "IPG",
+          "types": [
+            "Drone"
+          ]
         }
       ]
     },
