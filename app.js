@@ -63,7 +63,7 @@ async function connect() {
   notice('Connected to the host’s game server.');
 }
 async function dashboard() {
-  closeSpectator();
+  closeSpectator(); stopTwitch();
   station?.dispose?.();
   game = null; selected = null; station = null; $('stationContainer').replaceChildren();
   renderOwnerChoice();
@@ -83,7 +83,7 @@ async function refreshDesigns() {
   if (!catalog.length) {const option = document.createElement('option'); option.value = ''; option.textContent = 'No ships in the host library'; $('designSelect').append(option);}
 }
 async function enterGame(value) {
-  closeSpectator();
+  closeSpectator(); stopTwitch();
   station?.dispose?.();
   game = value; selected = null; conflict = false; station = null; answeredSaveRequest = game.save_request;
   $('stationContainer').replaceChildren(); $('emptyStation').hidden = false;
@@ -426,7 +426,7 @@ $('authForm').onsubmit = event => {
     await dashboard();
   });
 };
-$('logout').onclick = () => run(async () => {await flush(); await api('/logout', 'POST', {}); sessionStorage.removeItem(`matrix-token:${base}`); token = ''; closeSpectator(); user = null; game = null; station?.dispose?.(); station = null; $('stationContainer').replaceChildren(); screen('gateway');});
+$('logout').onclick = () => run(async () => {await flush(); await api('/logout', 'POST', {}); sessionStorage.removeItem(`matrix-token:${base}`); token = ''; closeSpectator(); stopTwitch(); user = null; game = null; station?.dispose?.(); station = null; $('stationContainer').replaceChildren(); screen('gateway');});
 $('createForm').onsubmit = event => {event.preventDefault(); run(async () => enterGame(await api('/games', 'POST', {name: $('gameName').value})));};
 $('joinForm').onsubmit = event => {event.preventDefault(); run(async () => enterGame(await api('/join', 'POST', {code: $('joinCode').value})));};
 $('back').onclick = () => run(async () => {await flush(); await dashboard();});
@@ -436,16 +436,102 @@ for (const [id, status] of [['startGame', 'playing'], ['pauseGame', 'paused'], [
   $(id).onclick = () => run(async () => {await flush(); game = await api(`/games/${game.id}/status`, 'POST', {status}); renderGame();});
 }
 $('selectShipForm').onsubmit = event => {event.preventDefault(); run(async () => {game = await api(`/games/${game.id}/ships`, 'POST', {design_id: $('designSelect').value, name: $('shipName').value.trim()}); $('shipName').value = ''; renderGame();});};
-$('nextImpulse').onclick = () => run(async () => {
+async function advanceImpulse(source) {
   advancingImpulse = true; renderGame();
   try {
-    game = await api(`/games/${game.id}/impulse`, 'POST', {from: {turn: game.turn, impulse: game.impulse}});
+    game = await api(`/games/${game.id}/impulse`, 'POST', {from: {turn: game.turn, impulse: game.impulse}, ...(source ? {source} : {})});
   } catch (error) {
     // Already moved on (another tab or a double click): show the current impulse.
     if (error.status === 409) game = await api(`/games/${game.id}`);
     throw error;
   } finally {advancingImpulse = false; renderGame();}
-});
+}
+$('nextImpulse').onclick = () => run(() => advanceImpulse());
+
+// ---- Twitch chat (host only), like Seer's Crystal Ball: an anonymous, read-only connection to
+// the channel's chat. `!impnext` presses Next impulse for the game open in this tab, so one chat
+// command can drive Seer and this game together. Nothing is ever sent to the chat.
+const TWITCH_CHAT = 'wss://irc-ws.chat.twitch.tv:443';
+const TWITCH_COOLDOWN_MS = 2000; // two moderators typing !impnext together advance only once
+let twitch = null; // {socket, channel, gameId, retry, retryTimer, lastCommand}
+function twitchStored(key, fallback) {try {return localStorage.getItem(`matrix-twitch:${key}`) ?? fallback;} catch {return fallback;}}
+function twitchStore(key, value) {try {localStorage.setItem(`matrix-twitch:${key}`, value);} catch {}}
+$('twitchChannel').value = twitchStored('channel', '');
+$('twitchModsOnly').checked = twitchStored('modsOnly', 'true') === 'true';
+$('twitchChannel').onchange = () => twitchStore('channel', $('twitchChannel').value.trim().replace(/^#/, '').toLowerCase());
+$('twitchModsOnly').onchange = () => twitchStore('modsOnly', String($('twitchModsOnly').checked));
+function twitchStatus(text) {$('twitchStatus').textContent = text;}
+function renderTwitch() {
+  $('twitchToggle').textContent = twitch ? 'Stop listening' : 'Listen for !impnext';
+  $('twitchToggle').classList.toggle('active', !!twitch);
+  $('twitchChannel').disabled = !!twitch;
+}
+// Same rules as Seer: the whole message must be the command; with "only moderators" on, the
+// sender needs the mod tag or a broadcaster badge.
+function twitchCommand(line, modsOnly) {
+  let tags = {};
+  if (line.startsWith('@')) {
+    const space = line.indexOf(' ');
+    tags = Object.fromEntries(line.slice(1, space).split(';').map(item => item.split('=')));
+    line = line.slice(space + 1);
+  }
+  if (!line.includes(' PRIVMSG ') || !line.includes(' :')) return null;
+  if (modsOnly && tags.mod !== '1' && !(tags.badges || '').includes('broadcaster/')) return null;
+  const text = line.slice(line.indexOf(' :', line.indexOf(' PRIVMSG ')) + 2).trim().toLowerCase();
+  return text === '!impnext' ? 'next impulse' : null;
+}
+function twitchMessage(line) {
+  if (!twitch) return;
+  if (line.startsWith('PING')) {twitch.socket.send('PONG :tmi.twitch.tv'); return;}
+  if (/ 366 /.test(line)) {twitch.retry = 0; twitchStatus(`Listening to #${twitch.channel} for !impnext.`); return;}
+  if (twitchCommand(line, $('twitchModsOnly').checked) !== 'next impulse') return;
+  const who = (line.match(/display-name=([^;]*)/) || [])[1] || 'chat';
+  if (!game || game.id !== twitch.gameId || game.host !== user?.id) return;
+  if (game.status !== 'playing') {twitchStatus(`Ignored !impnext from ${who}: the game is not playing.`); return;}
+  if (advancingImpulse || Date.now() - twitch.lastCommand < TWITCH_COOLDOWN_MS) return;
+  twitch.lastCommand = Date.now();
+  run(async () => {
+    await advanceImpulse('twitch');
+    twitchStatus(`!impnext from ${who} → impulse ${impulseLabel(game)}. Listening to #${twitch?.channel}.`);
+  });
+}
+function twitchConnect() {
+  const current = twitch;
+  if (!current) return;
+  const socket = new WebSocket(TWITCH_CHAT);
+  current.socket = socket;
+  twitchStatus(`Connecting to #${current.channel}…`);
+  socket.onopen = () => {
+    // justinfan accounts are Twitch's anonymous read-only logins (as Seer uses).
+    socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
+    socket.send(`NICK justinfan${10000 + Math.floor(Math.random() * 80000)}`);
+    socket.send(`JOIN #${current.channel}`);
+  };
+  socket.onmessage = event => {if (twitch === current) for (const line of String(event.data).split('\r\n')) if (line) twitchMessage(line);};
+  socket.onclose = () => {
+    if (twitch !== current) return;
+    // Reconnect while still listening, backing off to 30 seconds.
+    const delay = Math.min(30, 2 ** current.retry++) * 1000;
+    twitchStatus(`Twitch chat disconnected. Reconnecting in ${delay / 1000}s…`);
+    current.retryTimer = setTimeout(twitchConnect, delay);
+  };
+}
+function stopTwitch(message = 'Off. <code>!impnext</code> in chat moves to the next impulse.') {
+  if (twitch) {
+    const old = twitch; twitch = null;
+    clearTimeout(old.retryTimer); old.socket?.close();
+  }
+  $('twitchStatus').innerHTML = message;
+  renderTwitch();
+}
+$('twitchToggle').onclick = () => {
+  if (twitch) {stopTwitch(); return;}
+  const channel = $('twitchChannel').value.trim().replace(/^#/, '').toLowerCase();
+  if (!/^[a-z0-9_]{3,25}$/.test(channel)) {twitchStatus('Enter a valid Twitch channel name.'); return;}
+  $('twitchChannel').value = channel; twitchStore('channel', channel);
+  twitch = {socket: null, channel, gameId: game.id, retry: 0, retryTimer: 0, lastCommand: 0};
+  renderTwitch(); twitchConnect();
+};
 $('veilTab').onclick =() => run(() => selectShip(selected, 'veil'));
 $('starholdTab').onclick = () => run(() => selectShip(selected, 'starhold'));
 // ---- Save game (host only): every player's tab saves its pending edits, then the host
